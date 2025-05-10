@@ -19,26 +19,26 @@ public class DataModel {
     }
 
     public int getId() { return id.get(); }
-    public SimpleIntegerProperty idProperty() { return id; }
+    public SimpleIntegerProperty idProperty() { return this.id; }
 
     public String getFirstName() { return firstName.get(); }
-    public SimpleStringProperty firstNameProperty() { return firstName; }
+    public SimpleStringProperty firstNameProperty() { return this.firstName; }
 
     public String getLastName() { return lastName.get(); }
-    public SimpleStringProperty lastNameProperty() { return lastName; }
+    public SimpleStringProperty lastNameProperty() { return this.lastName; }
 
     public String getEmail() { return email.get(); }
-    public SimpleStringProperty emailProperty() { return email; }
+    public SimpleStringProperty emailProperty() { return this.email; }
 
     public String getGender() { return gender.get(); }
-    public SimpleStringProperty genderProperty() { return gender; }
+    public SimpleStringProperty genderProperty() { return this.gender; }
 
     public String getCountry() { return country.get(); }
-    public SimpleStringProperty countryProperty() { return country; }
+    public SimpleStringProperty countryProperty() { return this.country; }
 
     public String getDomain() { return domain.get(); }
-    public SimpleStringProperty domainProperty() { return domain; }
+    public SimpleStringProperty domainProperty() { return this.domain; }
 
     public String getBirthDate() { return birthDate.get(); }
-    public SimpleStringProperty birthDateProperty() { return birthDate; }
+    public SimpleStringProperty birthDateProperty() { return this.birthDate; }
 }

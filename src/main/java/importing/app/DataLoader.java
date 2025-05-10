@@ -33,8 +33,8 @@ public class DataLoader implements Runnable {
         this.onComplete = onComplete;
         this.fileIndex = fileIndex;
         
-        synchronized (lock) {
-            activeThreads++; // Increase active thread count when a new thread starts
+        synchronized (DataLoader.lock) {
+            ++DataLoader.activeThreads; // Increase active thread count when a new thread starts
         }
     }
 
@@ -73,7 +73,7 @@ public class DataLoader implements Runnable {
                             Integer.parseInt(values[0]), values[1], values[2], values[3],
                             values[4], values[5], values[6], values[7]);
 
-                    Thread.sleep(random.nextInt(50)); // Simulate processing time
+                    Thread.sleep(random.nextInt(20)); // Simulate processing time
 
                     Platform.runLater(() -> {
                         data.add(entry);
