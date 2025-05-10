@@ -8,6 +8,7 @@ import java.util.Queue;
 import java.util.stream.Collectors;
 
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -27,6 +28,14 @@ public class PrimaryController {
     @FXML private TableColumn<DataModel, Integer> colId;
     @FXML private TableColumn<DataModel, String> colFirstName, colLastName, colEmail, colGender, colCountry, colDomain, colBirthDate;
     
+    @FXML private Label labelFile1;
+    @FXML private Label labelFile2;
+    @FXML private Label labelFile3;
+
+    @FXML private Label loadedLabel;
+
+    private final ObservableList<Integer> rowCounts = FXCollections.observableArrayList(0, 0, 0);
+
     @FXML private AnchorPane uiContainer;
 
     @FXML private DatePicker datePickerStart;
@@ -43,6 +52,10 @@ public class PrimaryController {
 
     @FXML
     public void initialize() {
+        labelFile1.textProperty().bind(Bindings.createStringBinding(() -> rowCounts.get(0) + " rows loaded", this.rowCounts));
+        labelFile2.textProperty().bind(Bindings.createStringBinding(() -> rowCounts.get(1) + " rows loaded", this.rowCounts));
+        labelFile3.textProperty().bind(Bindings.createStringBinding(() -> rowCounts.get(2) + " rows loaded", this.rowCounts));
+
         // Bind table columns correctly with property methods
         colId.setCellValueFactory(cellData -> cellData.getValue().idProperty().asObject());
         colFirstName.setCellValueFactory(cellData -> cellData.getValue().firstNameProperty());
@@ -65,11 +78,13 @@ public class PrimaryController {
 
     @FXML
     private void loadData() {
+        loadedLabel.setText("Loading data...");
         uiContainer.setDisable(true);
-        DataLoader.loadDataFromFiles(this.data, this::queueError, this::onDataLoadComplete); // Pass error handling function
+        DataLoader.loadDataFromFiles(this.data, this.rowCounts, this::queueError, this::onDataLoadComplete); // Pass error handling function
     }
 
     private void onDataLoadComplete() {
+        loadedLabel.setText("Data loaded successfully!");
         this.originalData.setAll(this.data); // Store the original data for reset
         Platform.runLater(() -> uiContainer.setDisable(false)); // Re-enable UI when loading is complete
     }

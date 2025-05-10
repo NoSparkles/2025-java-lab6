@@ -54,6 +54,14 @@
        </TableView>
    
                       <!-- Buttons -->
-       <Button layoutX="218.0" layoutY="535.0" onAction="#loadData" text="Load Data" />
+       <Button layoutX="218.0" layoutY="549.0" onAction="#loadData" text="Load Data" />
+      <VBox alignment="CENTER_LEFT" layoutX="308.0" layoutY="527.0" prefHeight="69.0" prefWidth="100.0" spacing="5.0">
+         <children>
+            <Label fx:id="labelFile1" />
+            <Label fx:id="labelFile2" />
+            <Label fx:id="labelFile3" />
+         </children>
+      </VBox>
+      <Label fx:id="loadedLabel" layoutX="421.0" layoutY="553.0" />
    </children>
 </AnchorPane>
