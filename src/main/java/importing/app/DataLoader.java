@@ -17,6 +17,9 @@ public class DataLoader {
     // Regex pattern for validating email addresses
     private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
 
+    // Regex pattern for validating domain names
+    private static final Pattern DOMAIN_PATTERN = Pattern.compile("^[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
+
     public static void loadDataFromFiles(ObservableList<DataModel> data, Consumer<String> errorHandler, Runnable onComplete) {
         String[] files = {"MOCK_DATA1.csv", "MOCK_DATA2.csv", "MOCK_DATA3.csv"};
         ExecutorService executor = Executors.newFixedThreadPool(3);
@@ -33,6 +36,12 @@ public class DataLoader {
                             // Validate email format
                             if (!EMAIL_PATTERN.matcher(values[3]).matches()) {
                                 errorHandler.accept("Invalid email in " + file + ": " + values[3]);
+                                continue; // Skip this entry
+                            }
+
+                            // Validate domain format
+                            if (!DOMAIN_PATTERN.matcher(values[6]).matches()) {
+                                errorHandler.accept("Invalid domain in " + file + ": " + values[6]);
                                 continue; // Skip this entry
                             }
 
