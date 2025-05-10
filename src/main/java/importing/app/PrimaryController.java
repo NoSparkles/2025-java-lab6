@@ -164,6 +164,15 @@ public class PrimaryController {
             case "Domain":
                 comparator = Comparator.comparing(DataModel::getDomain);
                 break;
+            case "Birth Date":
+                comparator = Comparator.comparing(dataModel -> {
+                    try {
+                        return LocalDate.parse(dataModel.getBirthDate());
+                    } catch (Exception e) {
+                        return LocalDate.MAX; // Handle invalid dates
+                    }
+                });
+                break;
             default:
                 return; // Exit early if no valid selection
         }
