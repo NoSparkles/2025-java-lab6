@@ -13,6 +13,7 @@
 
 <AnchorPane prefHeight="900.0" prefWidth="1440.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="importing.app.PrimaryController">
    <children>
+      <AnchorPane layoutX="217.0" layoutY="545.0" prefHeight="312.0" prefWidth="1018.0" />
    
                 <!-- Table -->
        <TableView fx:id="dataTable" layoutX="218.0" layoutY="109.0" prefHeight="410.0" prefWidth="1018.0">
@@ -30,13 +31,14 @@
    
                 <!-- Buttons -->
        <Button layoutX="218.0" layoutY="546.0" onAction="#loadData" text="Load Data" />
-      <HBox alignment="CENTER_LEFT" layoutX="218.0" layoutY="586.0" prefHeight="25.0" prefWidth="598.0" spacing="10.0">
+      <HBox alignment="CENTER_LEFT" layoutX="218.0" layoutY="586.0" prefHeight="25.0" prefWidth="650.0" spacing="10.0">
          <children>
             <Label prefHeight="17.0" prefWidth="63.0" text="From Date:" />
             <DatePicker fx:id="datePickerStart" />
             <Label prefHeight="17.0" prefWidth="47.0" text="To Date:" />
             <DatePicker fx:id="datePickerEnd" />
             <Button mnemonicParsing="false" onAction="#filterByDate" onDragDetected="#filterByDate" prefHeight="25.0" prefWidth="66.0" text="Filter" />
+            <Button mnemonicParsing="false" onAction="#resetDateFilter" text="Reset Filter" />
          </children>
       </HBox>
       <VBox layoutX="218.0" layoutY="626.0" prefHeight="202.0" prefWidth="408.0" spacing="5.0">

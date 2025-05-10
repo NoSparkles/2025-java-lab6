@@ -54,6 +54,7 @@ public class PrimaryController {
     private final Queue<Label> errorQueue = new ArrayDeque<>();
 
     private final ObservableList<DataModel> data = FXCollections.observableArrayList();
+    private final ObservableList<DataModel> originalData = FXCollections.observableArrayList();
 
     @FXML
     public void initialize() {
@@ -68,12 +69,14 @@ public class PrimaryController {
         colBirthDate.setCellValueFactory(cellData -> cellData.getValue().birthDateProperty());
 
         // Ensure the TableView uses the correct ObservableList
-        dataTable.setItems(data);
+        dataTable.setItems(this.data);
     }
 
     @FXML
     private void loadData() {
-        DataLoader.loadDataFromFiles(data, this::queueError); // Pass error handling function
+        DataLoader.loadDataFromFiles(this.data, this::queueError); // Pass error handling function
+        originalData.clear();
+        originalData.addAll(this.data);
     }
 
     private void queueError(String errorMessage) {
@@ -106,6 +109,12 @@ public class PrimaryController {
 
         data.setAll(filtered);
     }
+
+    @FXML
+    private void resetDateFilter() {
+        data.setAll(this.originalData); // Restore the full dataset
+    }
+
 
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
