@@ -27,7 +27,7 @@ public class DataLoader {
                                     values[4], values[5], values[6], values[7]);
 
                             Platform.runLater(() -> data.add(entry));
-                            Thread.sleep(10);
+                            //Thread.sleep(10);
                         } catch (Exception lineError) {
                             errorHandler.accept("Error processing line in " + file + ": " + line + "\nDetails: " + lineError.getMessage());
                         }
@@ -38,10 +38,11 @@ public class DataLoader {
             });
         }
 
-        executor.shutdown();
         executor.submit(() -> { // Call completion callback when all files are processed
             executor.shutdown();
             Platform.runLater(onComplete);
         });
+
+        executor.shutdown();
     }
 }

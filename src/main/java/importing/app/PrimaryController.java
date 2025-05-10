@@ -13,10 +13,12 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 
 public class PrimaryController {
@@ -25,30 +27,13 @@ public class PrimaryController {
     @FXML private TableColumn<DataModel, Integer> colId;
     @FXML private TableColumn<DataModel, String> colFirstName, colLastName, colEmail, colGender, colCountry, colDomain, colBirthDate;
     
-    
+    @FXML private AnchorPane uiContainer;
+
     @FXML private DatePicker datePickerStart;
     @FXML private DatePicker datePickerEnd;
 
-    @FXML private CheckBox chkId;
-    @FXML private CheckBox chkIdReverse;
-
-    @FXML private CheckBox chkFirstName;
-    @FXML private CheckBox chkFirstNameReverse;
-
-    @FXML private CheckBox chkLastName;
-    @FXML private CheckBox chkLastNameReverse;
-
-    @FXML private CheckBox chkEmail;
-    @FXML private CheckBox chkEmailReverse;
-
-    @FXML private CheckBox chkGender;
-    @FXML private CheckBox chkGenderReverse;
-
-    @FXML private CheckBox chkCountry;
-    @FXML private CheckBox chkCountryReverse;
-
-    @FXML private CheckBox chkDomain;
-    @FXML private CheckBox chkDomainReverse;
+    @FXML private ChoiceBox<String> sortByChoiceBox;
+    @FXML private CheckBox ascendingCheckBox;
 
     @FXML private VBox errorBox;
     private final Queue<Label> errorQueue = new ArrayDeque<>();
@@ -70,13 +55,23 @@ public class PrimaryController {
 
         // Ensure the TableView uses the correct ObservableList
         dataTable.setItems(this.data);
+        uiContainer.setDisable(false);
+
+        // Initialize the choice box with sorting options
+        sortByChoiceBox.getItems().addAll("ID", "First Name", "Last Name", "Email", "Gender", "Country", "Domain", "Birth Date");
+        sortByChoiceBox.setValue("ID"); // Default selection
+        ascendingCheckBox.setSelected(true); // Default to ascending order
     }
 
     @FXML
     private void loadData() {
-        DataLoader.loadDataFromFiles(this.data, this::queueError); // Pass error handling function
-        originalData.clear();
-        originalData.addAll(this.data);
+        uiContainer.setDisable(true);
+        DataLoader.loadDataFromFiles(this.data, this::queueError, this::onDataLoadComplete); // Pass error handling function
+    }
+
+    private void onDataLoadComplete() {
+        this.originalData.setAll(this.data); // Store the original data for reset
+        Platform.runLater(() -> uiContainer.setDisable(false)); // Re-enable UI when loading is complete
     }
 
     private void queueError(String errorMessage) {
@@ -94,17 +89,31 @@ public class PrimaryController {
 
     @FXML
     private void filterByDate() {
-        LocalDate nuoDate = datePickerStart.getValue();
-        LocalDate ikiDate = datePickerEnd.getValue();
+        LocalDate fromDate = datePickerStart.getValue();
+        LocalDate toDate = datePickerEnd.getValue();
 
-        if (nuoDate == null || ikiDate == null) {
-            showAlert("Warning", "Check the date fields!");
+        System.out.println("Start Date: " + fromDate);
+        System.out.println("End Date: " + toDate);
+
+        if (fromDate == null || toDate == null) {
+            this.showAlert("Warning", "Please select a start and end date.");
+            return;
+        }
+
+        if (toDate.isBefore(fromDate) || toDate.isEqual(fromDate)) {
+            showAlert("Warning", "End date must be after start date.");
             return;
         }
 
         List<DataModel> filtered = data.stream()
-                .filter(entry -> LocalDate.parse(entry.getBirthDate()).isAfter(nuoDate) &&
-                                 LocalDate.parse(entry.getBirthDate()).isBefore(ikiDate))
+                .filter(entry -> {
+                    try {
+                        LocalDate birthDate = LocalDate.parse(entry.getBirthDate());
+                        return (birthDate.isAfter(fromDate) && birthDate.isBefore(toDate));
+                    } catch (Exception e) {
+                        return false; // Skip invalid dates
+                    }
+                })
                 .collect(Collectors.toList());
 
         data.setAll(filtered);
@@ -112,6 +121,8 @@ public class PrimaryController {
 
     @FXML
     private void resetDateFilter() {
+        this.datePickerStart.setValue(null); // Reset date pickers
+        this.datePickerEnd.setValue(null);
         data.setAll(this.originalData); // Restore the full dataset
     }
 
@@ -126,48 +137,41 @@ public class PrimaryController {
 
     @FXML
     private void applySort() {
-        Comparator<DataModel> comparator = Comparator.comparing(DataModel::getId); // Default sorting by ID
+        String sortBy = sortByChoiceBox.getValue();
+        boolean ascending = ascendingCheckBox.isSelected();
 
-        if (chkId.isSelected()) {
-            comparator = chkIdReverse.isSelected()
-                    ? comparator.thenComparing(Comparator.comparingInt(DataModel::getId).reversed())
-                    : comparator.thenComparing(Comparator.comparingInt(DataModel::getId));
-        }
-        if (chkFirstName.isSelected()) {
-            comparator = chkFirstNameReverse.isSelected()
-                    ? comparator.thenComparing(Comparator.comparing(DataModel::getFirstName).reversed())
-                    : comparator.thenComparing(Comparator.comparing(DataModel::getFirstName));
-        }
-        if (chkLastName.isSelected()) {
-            comparator = chkLastNameReverse.isSelected()
-                    ? comparator.thenComparing(Comparator.comparing(DataModel::getLastName).reversed())
-                    : comparator.thenComparing(Comparator.comparing(DataModel::getLastName));
-        }
-        if (chkEmail.isSelected()) {
-            comparator = chkEmailReverse.isSelected()
-                    ? comparator.thenComparing(Comparator.comparing(DataModel::getEmail).reversed())
-                    : comparator.thenComparing(Comparator.comparing(DataModel::getEmail));
-        }
-        if (chkGender.isSelected()) {
-            comparator = chkGenderReverse.isSelected()
-                    ? comparator.thenComparing(Comparator.comparing(DataModel::getGender).reversed())
-                    : comparator.thenComparing(Comparator.comparing(DataModel::getGender));
-        }
-        if (chkCountry.isSelected()) {
-            comparator = chkCountryReverse.isSelected()
-                    ? comparator.thenComparing(Comparator.comparing(DataModel::getCountry).reversed())
-                    : comparator.thenComparing(Comparator.comparing(DataModel::getCountry));
-        }
-        if (chkDomain.isSelected()) {
-            comparator = chkDomainReverse.isSelected()
-                    ? comparator.thenComparing(Comparator.comparing(DataModel::getDomain).reversed())
-                    : comparator.thenComparing(Comparator.comparing(DataModel::getDomain));
+        Comparator<DataModel> comparator;
+
+        switch (sortBy) {
+            case "ID":
+                comparator = Comparator.comparingInt(DataModel::getId);
+                break;
+            case "First Name":
+                comparator = Comparator.comparing(DataModel::getFirstName);
+                break;
+            case "Last Name":
+                comparator = Comparator.comparing(DataModel::getLastName);
+                break;
+            case "Email":
+                comparator = Comparator.comparing(DataModel::getEmail);
+                break;
+            case "Gender":
+                comparator = Comparator.comparing(DataModel::getGender);
+                break;
+            case "Country":
+                comparator = Comparator.comparing(DataModel::getCountry);
+                break;
+            case "Domain":
+                comparator = Comparator.comparing(DataModel::getDomain);
+                break;
+            default:
+                return; // Exit early if no valid selection
         }
 
-        // Apply sorting
-        List<DataModel> sorted = data.stream()
-                .sorted(comparator)
-                .collect(Collectors.toList());
-        data.setAll(sorted);
+        if (!ascending) {
+            comparator = comparator.reversed();
+        }
+
+        data.setAll(data.stream().sorted(comparator).collect(Collectors.toList()));
     }
 }
