@@ -80,6 +80,9 @@ public class PrimaryController {
     private void loadData() {
         loadedLabel.setText("Loading data...");
         uiContainer.setDisable(true);
+        this.data.clear(); // Clear existing data
+        this.rowCounts.setAll(0, 0, 0); // Reset row counts
+        this.errorBox.getChildren().clear(); // Clear previous errors
         DataLoader.loadDataFromFiles(this.data, this.rowCounts, this::queueError, this::onDataLoadComplete); // Pass error handling function
     }
 
