@@ -55,7 +55,7 @@ public class PrimaryController {
 
         // Ensure the TableView uses the correct ObservableList
         dataTable.setItems(this.data);
-        uiContainer.setDisable(false);
+        uiContainer.setDisable(true);
 
         // Initialize the choice box with sorting options
         sortByChoiceBox.getItems().addAll("ID", "First Name", "Last Name", "Email", "Gender", "Country", "Domain", "Birth Date");

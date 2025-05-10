@@ -13,11 +13,8 @@
 
 <AnchorPane prefHeight="900.0" prefWidth="1440.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="importing.app.PrimaryController">
    <children>
-      <AnchorPane fx:id="uiContainer" layoutX="217.0" layoutY="545.0" prefHeight="312.0" prefWidth="1018.0">
+      <AnchorPane fx:id="uiContainer" layoutX="211.0" layoutY="574.0" prefHeight="312.0" prefWidth="1018.0">
          <children>
-         
-                      <!-- Buttons -->
-             <Button onAction="#loadData" text="Load Data" />
             <HBox alignment="CENTER_LEFT" layoutY="32.0" prefHeight="25.0" prefWidth="650.0" spacing="10.0">
                <children>
                   <Label prefHeight="17.0" prefWidth="63.0" text="From Date:" />
@@ -28,7 +25,7 @@
                   <Button mnemonicParsing="false" onAction="#resetDateFilter" text="Reset Filter" />
                </children>
             </HBox>
-            <VBox layoutY="67.0" prefHeight="202.0" prefWidth="408.0" spacing="5.0">
+            <VBox layoutX="14.0" layoutY="67.0" prefHeight="202.0" prefWidth="408.0" spacing="5.0">
                <children>
                   <Label text="Sort Options:" />
                   <ChoiceBox fx:id="sortByChoiceBox" prefWidth="150.0" />
@@ -55,5 +52,8 @@
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
          </columnResizePolicy>
        </TableView>
+   
+                      <!-- Buttons -->
+       <Button layoutX="218.0" layoutY="535.0" onAction="#loadData" text="Load Data" />
    </children>
 </AnchorPane>
